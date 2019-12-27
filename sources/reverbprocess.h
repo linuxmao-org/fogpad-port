@@ -46,7 +46,7 @@ class ReverbProcess {
                 filters.erase( filters.begin() );
             }
             while ( !buffers.empty() ) {
-                delete buffers.at( 0 );
+                delete[] buffers.at( 0 );
                 buffers.erase( buffers.begin() );
             }
         }
@@ -62,7 +62,7 @@ class ReverbProcess {
                 filters.erase( filters.begin() );
             }
             while ( !buffers.empty() ) {
-                delete buffers.at( 0 );
+                delete[] buffers.at( 0 );
                 buffers.erase( buffers.begin() );
             }
         }

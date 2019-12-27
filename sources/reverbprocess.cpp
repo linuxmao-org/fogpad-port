@@ -63,7 +63,7 @@ ReverbProcess::ReverbProcess( int amountOfChannels, float sampleRate ) {
 }
 
 ReverbProcess::~ReverbProcess() {
-    delete _recordIndices;
+    delete[] _recordIndices;
     delete _recordBuffer;
     delete _postMixBuffer;
     delete _preMixBuffer;
