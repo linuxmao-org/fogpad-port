@@ -35,7 +35,7 @@ namespace Igorski {
 // Init / Deinit
 
 UIFogpad::UIFogpad()
-    : UI(933, 501)
+    : UI(930, 530)
 {
     fKnobById = new Knob *[kNumParameters]{};
     fCheckBoxById = new CheckBox *[kNumParameters]{};
