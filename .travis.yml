@@ -1,0 +1,112 @@
+language: c++
+
+branches:
+  except:
+    - automatic
+
+cache:
+  directories:
+    - download
+
+matrix:
+  include:
+    - os: linux
+      sudo: required
+      dist: bionic
+      env:
+        - _BUILD=win32
+        - _MINGW=mingw32
+        - _HOST=i686-w64-mingw32
+      before_install:
+        - docker pull jpcima/arch-mingw
+      install:
+        - container=$(docker run -d -i -t -v /home:/home jpcima/arch-mingw /bin/bash)
+        - |
+          cross() {
+            docker exec -w "$(pwd)" -e "_BUILD=$_BUILD" -e "_MINGW=$_MINGW" -e "_HOST=$_HOST" -i -t "$container" "$@"
+          }
+      script:
+        - cross bash .travis/script-mingw.sh
+        - cp -drfv bin fogpad-"$_BUILD"
+        - rm -f fogpad-"$_BUILD"/README
+        - install -d release
+        - zip -9 -r release/fogpad-"$_BUILD".zip fogpad-"$_BUILD"
+    - os: linux
+      sudo: required
+      dist: bionic
+      env:
+        - _BUILD=win64
+        - _MINGW=mingw64
+        - _HOST=x86_64-w64-mingw32
+      before_install:
+        - docker pull jpcima/arch-mingw
+      install:
+        - container=$(docker run -d -i -t -v /home:/home jpcima/arch-mingw /bin/bash)
+        - |
+          cross() {
+            docker exec -w "$(pwd)" -e "_BUILD=$_BUILD" -e "_MINGW=$_MINGW" -e "_HOST=$_HOST" -i -t "$container" "$@"
+          }
+      script:
+        - cross bash .travis/script-mingw.sh
+        - cp -drfv bin fogpad-"$_BUILD"
+        - rm -f fogpad-"$_BUILD"/README
+        - install -d release
+        - zip -9 -r release/fogpad-"$_BUILD".zip fogpad-"$_BUILD"
+    - os: osx
+      osx_image: xcode9.2
+      sudo: required
+      env:
+        - _BUILD=macos
+      script:
+        - bash .travis/script-macos.sh
+        - cp -av bin fogpad-"$_BUILD"
+        - rm -f fogpad-"$_BUILD"/README
+        - install -d release
+        - zip -9 -r release/fogpad-"$_BUILD".zip fogpad-"$_BUILD"
+    - os: linux
+      sudo: required
+      dist: trusty
+      env:
+        - _BITS=64
+        - _BUILD=linux64
+      before_install:
+        - sudo apt-get update -qq
+      install:
+        - sudo apt-get install checkinstall libcairo2-dev python
+      script:
+        - bash .travis/script-linux.sh
+        - cp -drfv bin fogpad-"$_BUILD"
+        - rm -f fogpad-"$_BUILD"/README
+        - install -d release
+        - zip -9 -r release/fogpad-"$_BUILD".zip fogpad-"$_BUILD"
+        - echo "A reverb effect in which the reflections can be frozen, filtered, pitch shifted and ultimately disintegrated" > description-pak
+        - sudo checkinstall --type=debian --install=no --default --pkgname=fogpad --pkgversion="`git describe --abbrev=0 | sed 's/^v//'``git log -n 1 --pretty=format:"+%cd~git%h" --date=short master | sed 's/-//g'`" --pkgarch=amd64 --pkgrelease=0jpc1 --pkglicense=BSL-1.0 --pkggroup=sound --maintainer="jp-dev@inbox.ru" --nodoc
+        - sudo mv -f *.deb release/fogpad-"$_BUILD".deb
+
+before_script:
+  - sed -i~ 's%/usr/local%/usr%g' plugins/*/Makefile
+
+before_deploy:
+  - |
+    if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
+      export TRAVIS_TAG=automatic
+      git tag -f "$TRAVIS_TAG"
+    fi
+
+deploy:
+  provider: releases
+  api_key: "$GITHUB_TOKEN"
+  file: release/*
+  file_glob: true
+  skip_cleanup: true
+  prerelease: true
+  overwrite: true
+  on:
+    branch: master
+
+env:
+  global:
+    secure: "JrGYtDNyJdeFB555mShUE/bc27bGqdeIaNlbNC0Ygkxpaij328AyoaWSTlU+Cjt94Y+5b1zNwwMvRTTajkoFejbEL9k6YVColfIETssOthSNxR5VOkzSwDTD+Ekp6h7sCbMOUlhpkOxgylPdUnORjOkuir62LPhwYL7Syc9JwcpQhfnyRO91zHk9GD4cQ74hckEAvOHaFW7M6X9UF2Q74mD84RpK6j80y8eQDtGmvN2hXHUDpup2dkqVXqBV9SNpg/zzuF7+TAf2Xknp2wo7JVTjhc4MmofB77n0YMhjr36uHLfCFVqhUSWSLChmIyk/AQEEB/0ySQ5Vl62uxSd57b2weFoy3OabRdAB7VDS4OwMwEPD78BFSiTh2eUnVNNSWaCzxX+QAZ3uyg9FHuIltfwglk5wGz6VkLaQQ0aesJkXrj2zBq3jb1a4sHaiWLFS0zUXvSrx3fIou3x5BTHyzH5MSbvMGJFdiXAhYasc6dZGi+M/diH7C9U5rAXgyFQ+k6BfHfU+8kwsK8WUs5tBsDqQwbE9R2BNbHzLus8E4a8usNZzv7xJ5eSklDVYKuU+/4mkfHWDOVU1HkqHtD3g9XA5OwnE0M3NIIksjKN1/Yz9uI3lAxA/PPr09DSflrAzLeGhMB9IL42XcQwR4i4OzSVuQKCN+nRSWFf9ZWDZX7g="
+
+notifications:
+  irc: "ircs://chat.freenode.net:7070/#librazik"
