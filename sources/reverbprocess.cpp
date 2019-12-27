@@ -29,6 +29,9 @@ namespace Igorski {
 ReverbProcess::ReverbProcess( int amountOfChannels, float sampleRate ) {
     _sampleRate = sampleRate;
 
+    // jpc: resolve use of uninitialized memory
+    _mode = INITIAL_MODE;
+
     _amountOfChannels = amountOfChannels;
 
     _maxRecordIndex = Calc::millisecondsToBuffer( MAX_RECORD_TIME_MS, sampleRate );
