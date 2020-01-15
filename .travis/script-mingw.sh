@@ -16,6 +16,22 @@ set -x
 test ! -z "$_MINGW"
 test ! -z "$_HOST"
 
+
+# ---------------------------------------------------------------------------------------------------------------------
+# install requirements
+
+cat >>/etc/pacman.conf <<EOF
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+
+[mingw-w64]
+SigLevel = Optional TrustAll
+Server = https://github.com/jpcima/arch-mingw-w64/releases/download/repo.\$arch/
+EOF
+
+pacman -Sqy --noconfirm
+pacman -Sq --noconfirm base-devel wine mingw-w64-gcc mingw-w64-pkg-config mingw-w64-cairo
+
 # ---------------------------------------------------------------------------------------------------------------------
 # build host tools
 
@@ -50,5 +66,4 @@ sed -i 's/"$GEN"/wine "$GEN"/g' dpf/utils/generate-ttl.sh
 # ---------------------------------------------------------------------------------------------------------------------
 # build the plugin
 
-# TODO skipped LV2 build
-CROSS_COMPILING=true WINDOWS=true BUILD_LV2=false make $MAKE_ARGS
+WINDOWS=true make $MAKE_ARGS

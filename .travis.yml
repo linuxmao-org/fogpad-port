@@ -17,9 +17,9 @@ matrix:
         - _MINGW=mingw32
         - _HOST=i686-w64-mingw32
       before_install:
-        - docker pull jpcima/arch-mingw
+        - docker pull archlinux
       install:
-        - container=$(docker run -d -i -t -v /home:/home jpcima/arch-mingw /bin/bash)
+        - container=$(docker run -d -i -t -v /home:/home archlinux /bin/bash)
         - |
           cross() {
             docker exec -w "$(pwd)" -e "_BUILD=$_BUILD" -e "_MINGW=$_MINGW" -e "_HOST=$_HOST" -i -t "$container" "$@"
@@ -37,9 +37,9 @@ matrix:
         - _MINGW=mingw64
         - _HOST=x86_64-w64-mingw32
       before_install:
-        - docker pull jpcima/arch-mingw
+        - docker pull archlinux
       install:
-        - container=$(docker run -d -i -t -v /home:/home jpcima/arch-mingw /bin/bash)
+        - container=$(docker run -d -i -t -v /home:/home archlinux /bin/bash)
         - |
           cross() {
             docker exec -w "$(pwd)" -e "_BUILD=$_BUILD" -e "_MINGW=$_MINGW" -e "_HOST=$_HOST" -i -t "$container" "$@"
@@ -96,7 +96,7 @@ deploy:
   file_glob: true
   prerelease: true
   overwrite: true
-  edge: true
+  skip_cleanup: true
   on:
     branch: master
 
@@ -105,4 +105,8 @@ env:
     secure: "JrGYtDNyJdeFB555mShUE/bc27bGqdeIaNlbNC0Ygkxpaij328AyoaWSTlU+Cjt94Y+5b1zNwwMvRTTajkoFejbEL9k6YVColfIETssOthSNxR5VOkzSwDTD+Ekp6h7sCbMOUlhpkOxgylPdUnORjOkuir62LPhwYL7Syc9JwcpQhfnyRO91zHk9GD4cQ74hckEAvOHaFW7M6X9UF2Q74mD84RpK6j80y8eQDtGmvN2hXHUDpup2dkqVXqBV9SNpg/zzuF7+TAf2Xknp2wo7JVTjhc4MmofB77n0YMhjr36uHLfCFVqhUSWSLChmIyk/AQEEB/0ySQ5Vl62uxSd57b2weFoy3OabRdAB7VDS4OwMwEPD78BFSiTh2eUnVNNSWaCzxX+QAZ3uyg9FHuIltfwglk5wGz6VkLaQQ0aesJkXrj2zBq3jb1a4sHaiWLFS0zUXvSrx3fIou3x5BTHyzH5MSbvMGJFdiXAhYasc6dZGi+M/diH7C9U5rAXgyFQ+k6BfHfU+8kwsK8WUs5tBsDqQwbE9R2BNbHzLus8E4a8usNZzv7xJ5eSklDVYKuU+/4mkfHWDOVU1HkqHtD3g9XA5OwnE0M3NIIksjKN1/Yz9uI3lAxA/PPr09DSflrAzLeGhMB9IL42XcQwR4i4OzSVuQKCN+nRSWFf9ZWDZX7g="
 
 notifications:
-  irc: "ircs://chat.freenode.net:7070/#librazik"
+  irc:
+    template:
+      - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
+    channels:
+      - "ircs://chat.freenode.net:7070/#librazik"
