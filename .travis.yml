@@ -26,10 +26,10 @@ matrix:
           }
       script:
         - cross bash .travis/script-mingw.sh
-        - cp -drfv bin fogpad-"$_BUILD"
-        - rm -f fogpad-"$_BUILD"/README
+        - cp -drfv bin fogpad-port-"$_BUILD"
+        - rm -f fogpad-port-"$_BUILD"/README
         - install -d release
-        - zip -9 -r release/fogpad-"$_BUILD".zip fogpad-"$_BUILD"
+        - zip -9 -r release/fogpad-port-"$_BUILD".zip fogpad-port-"$_BUILD"
     - os: linux
       dist: bionic
       env:
@@ -46,20 +46,20 @@ matrix:
           }
       script:
         - cross bash .travis/script-mingw.sh
-        - cp -drfv bin fogpad-"$_BUILD"
-        - rm -f fogpad-"$_BUILD"/README
+        - cp -drfv bin fogpad-port-"$_BUILD"
+        - rm -f fogpad-port-"$_BUILD"/README
         - install -d release
-        - zip -9 -r release/fogpad-"$_BUILD".zip fogpad-"$_BUILD"
+        - zip -9 -r release/fogpad-port-"$_BUILD".zip fogpad-port-"$_BUILD"
     - os: osx
       osx_image: xcode9.2
       env:
         - _BUILD=macos
       script:
         - bash .travis/script-macos.sh
-        - cp -av bin fogpad-"$_BUILD"
-        - rm -f fogpad-"$_BUILD"/README
+        - cp -av bin fogpad-port-"$_BUILD"
+        - rm -f fogpad-port-"$_BUILD"/README
         - install -d release
-        - zip -9 -r release/fogpad-"$_BUILD".zip fogpad-"$_BUILD"
+        - zip -9 -r release/fogpad-port-"$_BUILD".zip fogpad-port-"$_BUILD"
     - os: linux
       dist: trusty
       env:
@@ -71,13 +71,13 @@ matrix:
         - sudo apt-get install checkinstall libcairo2-dev python
       script:
         - bash .travis/script-linux.sh
-        - cp -drfv bin fogpad-"$_BUILD"
-        - rm -f fogpad-"$_BUILD"/README
+        - cp -drfv bin fogpad-port-"$_BUILD"
+        - rm -f fogpad-port-"$_BUILD"/README
         - install -d release
-        - zip -9 -r release/fogpad-"$_BUILD".zip fogpad-"$_BUILD"
+        - zip -9 -r release/fogpad-port-"$_BUILD".zip fogpad-port-"$_BUILD"
         - echo "A reverb effect in which the reflections can be frozen, filtered, pitch shifted and ultimately disintegrated" > description-pak
-        - sudo checkinstall --type=debian --install=no --default --pkgname=fogpad --pkgversion="`git describe --abbrev=0 | sed 's/^v//'``git log -n 1 --pretty=format:"+%cd~git%h" --date=short master | sed 's/-//g'`" --pkgarch=amd64 --pkgrelease=0jpc1 --pkglicense=BSL-1.0 --pkggroup=sound --maintainer="jp-dev@inbox.ru" --nodoc
-        - sudo mv -f *.deb release/fogpad-"$_BUILD".deb
+        - sudo checkinstall --type=debian --install=no --default --pkgname=fogpad-port --pkgversion="`git describe --abbrev=0 | sed 's/^v//'``git log -n 1 --pretty=format:"+%cd~git%h" --date=short master | sed 's/-//g'`" --pkgarch=amd64 --pkgrelease=0jpc1 --pkglicense=BSL-1.0 --pkggroup=sound --maintainer="jp-dev@inbox.ru" --nodoc
+        - sudo mv -f *.deb release/fogpad-port-"$_BUILD".deb
 
 before_script:
   - sed -i~ 's%/usr/local%/usr%g' plugins/*/Makefile
