@@ -52,3 +52,15 @@ make
 sudo make install  # to install in system directories, or
 make install-user  # to install in the home directory
 ```
+
+## Changelog
+
+**v1.0.0**
+
+This is an initial version of the Fogpad port, a cross-platform audio plugin.
+
+This distinguishes from upstream Fogpad in some ways:
+- adopted a version numbering scheme
+- implemented portably on top of the DISTRHO plugin framework
+- changed sample rate to no longer be a global variable of the plugin
+- fixed a bug which disregards the host sample rate, running the effect as default 44.1 kHz
