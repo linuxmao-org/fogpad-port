@@ -6,7 +6,7 @@ A reverb effect in which the reflections can be frozen, filtered, pitch shifted 
 
 ## About
 
-This is a port of the Fogpad plugin created by Igorski.
+This is a port of the [Fogpad plugin created by Igorski](https://github.com/igorski/fogpad).
 It is based on the DISTRHO plugin framework (DPF) to provide support of
 GNU/Linux and other platforms.
 
