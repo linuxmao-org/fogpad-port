@@ -1,6 +1,6 @@
 # Fogpad
 
-[![Build Status](https://travis-ci.com/linuxmao-org/fogpad.svg?branch=master)](https://travis-ci.com/linuxmao-org/fogpad)
+[![Build Status](https://travis-ci.com/linuxmao-org/fogpad-port.svg?branch=master)](https://travis-ci.com/linuxmao-org/fogpad-port)
 
 A reverb effect in which the reflections can be frozen, filtered, pitch shifted and ultimately disintegrated
 
